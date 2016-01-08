@@ -31,11 +31,15 @@ public class Bauplan implements Materialplan {
     @Override
     public int getMaterial() {
         int Holzbedarf = 0;
+
+        System.out.println(name+"-Komponenten:");
+
         for (final Materialplan bauteil : children) {
+
             Holzbedarf += bauteil.getMaterial();
         }
 
-        System.out.println("\nMaterialbedarf gesamt:"+Holzbedarf);
+        //System.out.println("\nMaterialbedarf gesamt:"+Holzbedarf);
 
         return Holzbedarf;
 

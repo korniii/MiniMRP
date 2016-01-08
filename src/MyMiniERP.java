@@ -1,71 +1,64 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Created by Moritz on 20.12.2015.
+ * Created by Moritz on 06.01.2016.
  */
 public class MyMiniERP {
 
     public static void main(String[]args) throws IOException {
 
-        Bauteil Stuhlbein = new Bauteil("Stuhlbein", new Holz(5));
-        Bauteil Stuhlsitz = new Bauteil("Stuhlsitz", new Holz(20));
-        Bauteil Tischbein = new Bauteil("Tischbein", new Holz(10));
-        Bauteil Tischsitz = new Bauteil("Tischsitz", new Holz(40));
+        Holz bigBlock = new Holz("BigBlock", 20);
 
-        List<Materialplan> basisTeile = new ArrayList<Materialplan>();
-        basisTeile.add(Stuhlsitz);
+        Bauteil Stuhlbein = new Bauteil("Stuhlbein");
+        Bauteil Stuhlsitz = new Bauteil("Stuhlsitz");
 
-        Bauplan stuhlBauplan = new Bauplan("Stuhl", basisTeile);
+        Stuhlbein.add(bigBlock);
+        Stuhlsitz.add(bigBlock);
 
-        HolzLager Lager = new HolzLager();
+        BauplanBuilder normalBuilder = new BauplanBuilder();
+        normalBuilder.setName("Stuhl");
+        BauplanDatabaseListener databaseListener = new BauplanDatabaseListener();
+        MaterialbedarfListener materialbedarfListener = new MaterialbedarfListener();
 
-        EinkaufListener einkaufListener = new EinkaufListener();
-        FertigungListener fertigungListener = new FertigungListener();
+        normalBuilder.addListener(databaseListener);
+        normalBuilder.addListener(materialbedarfListener);
 
-        Lager.addListener(einkaufListener);
-        Lager.addListener(fertigungListener);
+        StuhlBauplanBuilder stuhlBuilder = new StuhlBauplanBuilder();
+        stuhlBuilder.addListener(databaseListener);
+        stuhlBuilder.addListener(materialbedarfListener);
 
-        Lager.addHolzpaket(new Holz(60));
 
-        InputStreamReader isr = new InputStreamReader(System.in);
-        BufferedReader br = new BufferedReader(isr);
+        InputStreamReader input = new InputStreamReader(System.in);
+        BufferedReader buffer = new BufferedReader(input);
 
-        while (true) {
 
-            int eingabe = Integer.parseInt(br.readLine());
-            switch (eingabe) {
+        while(true){
+
+            int eingabe = Integer.parseInt(buffer.readLine());
+            switch(eingabe){
                 case 1:
-                    Lager.addHolzpaket(new Holz(100));
-                    System.out.println(Lager.getLagerBestand());
+                    normalBuilder.addBauteil(Stuhlbein);
+                    System.out.println("Stuhlbein hinzugefügt.");
                     break;
                 case 2:
-                    StuhlBauplanBuilder Builder = new StuhlBauplanBuilder();
-                    System.out.println("Wieviele Stuhlbeine wollen Sie hinzufügen?");
-                    int bauteil = Integer.parseInt(br.readLine());
-                    for(int i = 0; i < bauteil; i++){
-                        Builder.addBauteil(Stuhlbein);
-                    }
-                    stuhlBauplan = Builder.create();
+                    normalBuilder.create();
                     break;
                 case 3:
-                    int einheiten = Integer.parseInt(br.readLine());
-                    Lager.runBestellung(stuhlBauplan, einheiten);
-                break;
-                case 4:
-                    fertigungListener.getPendingAuftraege();
-                break;
+                    stuhlBuilder.addBauteil(Stuhlbein);
+                    System.out.println("Stuhlbein hinzugefügt.");
+                    break;
+                case 4: stuhlBuilder.create();
+                    break;
                 case 5:
-                    System.out.println(einkaufListener.getEinkaufsmenge()+" Einheiten müssen für die vorhanden Aufträge eingekauft werden.");
-                break;
+                    databaseListener.getArchivSize();
             }
+
         }
 
 
 
-
     }
+
 }

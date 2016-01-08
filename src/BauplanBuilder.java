@@ -23,8 +23,29 @@ public class BauplanBuilder {
         }
 
         public Bauplan create() {
+            for(Listener listener : listeners){
+                listener.bauplanToListener(new Bauplan(name, bauteile));
+            }
             return new Bauplan(name, bauteile);
         }
+
+    //Observeranbau
+    private final List<Listener> listeners = new ArrayList<Listener>();
+
+    public void addListener( Listener listener ) {
+        this.listeners.add( listener );
+    }
+
+    public void removeListener( Listener listener ) {
+        this.listeners.remove( listener );
+    }
+
+    public interface Listener {
+
+        void bauplanToListener(Bauplan bauplan);
+
+    }
+
 
 }
 

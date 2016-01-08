@@ -3,8 +3,12 @@
  */
 public class StuhlBauplanBuilder extends BauplanBuilder {
 
+
+
     public StuhlBauplanBuilder(){
-        addBauteil(new Bauteil("Stuhlsitz", new Holz(20)));
+        Bauteil stuhlSitz = new Bauteil("Stuhlsitz");
+        stuhlSitz.add(new Holz("BigBlock", 20));
+        addBauteil(stuhlSitz);
     }
 
     public Bauplan create(){
